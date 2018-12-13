@@ -8,7 +8,17 @@ services:
   nginx:
     build: 
       context: ./nginx
-     
+    volumes: 
+      - ../src:/var/www/
+      - ./nginx/nginx.config:/etc/nginx/nginx.config
+      - ./nginx/sites/:/etc/nginx/sites-available
+      - ./nginx/config.d/:/etc/nginx/config.d
+    depends_on: 
+      - php-fpm
+    ports: 
+      - "80:80"
+      - "443:443" #host:container
+  
   database:
     build: 
       context: ./database
@@ -17,3 +27,5 @@ services:
         - MYSQL_USER=myuser
         - MYSQL_PASSWORD=secret
         - MYSQL_ROOT_PASSWORD=docker
+    volumes: 
+      - ./database/data.sql:/docker-entrypoint-initdb.d/data.sql
